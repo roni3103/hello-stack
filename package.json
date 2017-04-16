@@ -1,0 +1,31 @@
+{
+  "name": "hello-stack",
+  "version": "1.0.0",
+  "description": "A basic web app stack",
+  "dependencies": {
+    "cors": "^2.8.3",
+    "express": "^4.15.2",
+    "parallelshell": "^2.0.0",
+    "static-server": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "parallelshell 'static-server frontend/ -p 9000' 'node backend/index.js'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobias-g/hello-stack.git"
+  },
+  "keywords": [
+    "node",
+    "mongo",
+    "stack"
+  ],
+  "author": "Tobias Gray",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/tobias-g/hello-stack/issues"
+  },
+  "homepage": "https://github.com/tobias-g/hello-stack#readme"
+}
