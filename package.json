@@ -5,6 +5,7 @@
   "dependencies": {
     "cors": "^2.8.3",
     "express": "^4.15.2",
+    "mongodb": "^2.2.25",
     "parallelshell": "^2.0.0",
     "static-server": "^2.0.4"
   },

@@ -12,3 +12,7 @@
 ## Backend
 
 1. [The back end](backend/README.md)
+
+## Database
+
+1. [The database](database/README.md)
