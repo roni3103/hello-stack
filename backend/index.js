@@ -3,6 +3,18 @@ var cors        = require('cors');
 var MongoClient = require('mongodb').MongoClient;
 var app         = express();
 
+// we use the multer middleware to handle multipart/form-data form submits for
+// our upload endpoint. This is where we configure multer and the middleware we
+// want to use
+var multer = require('multer');
+var upload = multer({ dest: 'tmp/' });
+
+// here we pull in our own functions that are used/called for our routes
+// (endpoints). Its usually a good practice to store each endpoint in its own
+// file name spaced by folder. THat means our index.js doesn't grow out of
+// control after we've added a few endpoints.
+var uploadFile = require('./api/v1/upload');
+
 // Note: Anything we run here will run only once when we start the backend. This
 // is good for setting up our API routes and what functions they call or middle
 // ware which we only want to do once and not on every request.
@@ -47,11 +59,28 @@ app.use(function (req, res, next) {
 // good practice.
 
 /**
- * An endpoint that simply returns the date and time for the server.
+ * An endpoint that simply returns the date and time for the server. See how we
+ * define the function we want to handle request to this endpoint right here.
+ * Thats a big no-no as we described further up its better to require these
+ * functions from separate files to stop our index.js becoming uncontrollable.
+ * It also makes for easier unit testing. Luckily the other endpoints are much
+ * better.
  */
 app.get('/api/v1/time', function (req, res) {
     res.send(new Date());
 });
+
+/**
+ * An endpoint for uploading files via multipart/form-data. Note how we can pass
+ * any number of arguments to app.post as middleware. The first argument is the
+ * endpoint string while then from left to right each function gets called only
+ * calling the next in the chain if the previous calls the "next" method. In
+ * this endpoint we call multers middleware before our own own to handle data
+ * from the upload request. Here we tell it to look for a single file upload in
+ * the form field "file". Once done processing that call our function to do
+ * whatever we want with the file.
+ */
+app.post('/api/v1/upload', upload.single('file'), uploadFile);
 
 // Before we start our server (API) we create a connection to out Mongo DB. If
 // that fails we don't bother starting the server (after all nothing will really
