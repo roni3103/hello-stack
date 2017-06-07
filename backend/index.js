@@ -1,5 +1,6 @@
 var express     = require('express');
 var cors        = require('cors');
+var bodyParser  = require('body-parser')
 var MongoClient = require('mongodb').MongoClient;
 var app         = express();
 
@@ -9,11 +10,17 @@ var app         = express();
 var multer = require('multer');
 var upload = multer({ dest: 'tmp/' });
 
+// we use the body parser middleware to handle json data being passed in request
+// bodies
+app.use(bodyParser.json());
+
 // here we pull in our own functions that are used/called for our routes
 // (endpoints). Its usually a good practice to store each endpoint in its own
-// file name spaced by folder. THat means our index.js doesn't grow out of
+// file name spaced by folder. That means our index.js doesn't grow out of
 // control after we've added a few endpoints.
-var uploadFile = require('./api/v1/upload');
+var uploadFile    = require('./api/v1/upload');
+var createPancake = require('./api/v1/pancakes/post');
+var getPancakes   = require('./api/v1/pancakes/get');
 
 // Note: Anything we run here will run only once when we start the backend. This
 // is good for setting up our API routes and what functions they call or middle
@@ -82,6 +89,12 @@ app.get('/api/v1/time', function (req, res) {
  */
 app.post('/api/v1/upload', upload.single('file'), uploadFile);
 
+/**
+ * Pancake create and get endpoint.
+ */
+app.post('/api/v1/pancakes', createPancake);
+app.get('/api/v1/pancakes', getPancakes);
+
 // Before we start our server (API) we create a connection to out Mongo DB. If
 // that fails we don't bother starting the server (after all nothing will really
 // work if we can't get data from our database). Once we have a connection we
@@ -91,7 +104,7 @@ var connectString = 'mongodb://localhost:27017/hello-stack';
 MongoClient.connect(connectString, function (err, database) {
     // connection failed so give up on life
     if (err) {
-        log.error(err);
+        console.error(err);
         process.exit(1);
     }
 

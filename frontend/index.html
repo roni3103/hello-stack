@@ -21,12 +21,24 @@
     <p>Below are a few example of how our front end can interact with our back end.</p>
 
     <h2>An API GET Request</h2>
-    <p>Get me some data from my database.</p>
+    <p>Get me the date-time from my server.</p>
     <button id="get-data">Get Data!</button>
     <h3>Result</h3>
     <div class="result">
 
     </div>
+
+    <h2>Create &amp; Persist Data</h2>
+    <p>lets create a pancake there's many types like crepe, scotch and so on...</p>
+    <form id="create-pancake">
+        <input type="text" name="name" placeholder="Enter a pancake name">
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Read Pancakes</h2>
+    <p>Lets take a look at what pancakes are stored in our database.</p>
+    <button id="refresh-pancakes">Refresh</button>
+    <div class="get-pancake-result"></div>
 
     <h2>Upload A File</h2>
     <p>Select a file and hit submit.</p>
