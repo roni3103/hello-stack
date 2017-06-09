@@ -42,21 +42,23 @@ Lets break that down so we can see exactly what that means. We'll start with the
 
 Applications will typically have many resources. An application that lets users create todo lists will have users, todo lists and todo items as resources. These would generally also be linked in a sense that a user has many todo lists and a todo list has many todo items.
 
-#### Create
+#### Create, Read, Update & Delete
 
-todo
+Create refers to creating a new resource. In the Hello Stack example app we can create pancakes. REST APIs like we use in the application will see HTTP requests that have the HTTP methods POST as a request to create something. For example to create a pancake we sent a HTTP `POST` request to `api/v1/pancakes` where the body of the request contains the data as JSON to use for our pancake such as:
 
-#### READ
+```
+{
+	"pancake": {
+		"title": "Crêpe"
+	}
+}
+```
 
-todo
+Read refers to getting data from out API about resources. For REST APIs we like our example app we use requests with the HTTP method GET to signify we want to read some data. If we want to get info on all pancakes we could make a GET request to `api/v1/pancakes` and common practice dictates if we wanted to get info on a single pancake we could filter by id by making  GET request to `api/v1/pancakes/<ID>`. The response body for these calls would return either an object for our pancake or array of pancake objects depending on what we requested.
 
-#### Update
+Update refers to updating an exisitng resource with new info. Once again REST convention dictates a HTTP method to be used for this which is `PUT`. Like create requests but with an ID in the url `api/v1/pancakes/<ID>` the ID to signify which resource to update. The body of the request contains what to update the resource with. Note `PUT` should overwrite the entire resource while if you wanted to update only some attributes of a resource you may instead want to use the HTTP method `PATCH`.
 
-todo
-
-#### Delete
-
-todo
+Finally Delete is to remove a resource. For this we use the request URL for the resource type with its ID at the end to say which resource to delete `api/v1/pancakes/<ID>`. We send the request using the HTTP method `DELETE`. Note your API may not actually
 
 ## Uploading Files
 
