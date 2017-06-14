@@ -2,6 +2,7 @@
 
 let Promise = require('promise');
 let _       = require('lodash');
+let log = require('../../../util/log');
 
 // Docs
 // ----
@@ -29,6 +30,8 @@ let _       = require('lodash');
 /**
  * Checks the body for our API request to see if it has all the details we need
  * to save a new pancake.
+ * @param {Object} data dependencies for sending response
+ * @returns {Promise} promise resolved when params have been validated
  */
 function validateParams (data) {
     return new Promise(function (resolve, reject) {
@@ -40,7 +43,7 @@ function validateParams (data) {
             errors.push({
                 title: 'Invalid Attribute',
                 detail: 'Pancake name is required.'
-            })
+            });
         }
 
         // if errors lets bottle out
@@ -63,25 +66,28 @@ function validateParams (data) {
 
 /**
  * Function to save a pancake to the database.
+ * @param {Object} data dependencies for sending response
+ * @returns {Promise} promise resolved when panacake is saved
  */
 function savePancake (data) {
     return new Promise(function (resolve, reject) {
-        let pancake = _.get(data, 'pancake'); // the previous validate function will have added our validated pancake
-        let db      = _.get(data, 'req.db');  // our middleware adds db to every req object
+        // the previous validate function will have added our validated pancake
+        let pancake = _.get(data, 'pancake');
+        // our middleware adds db to every req object
+        let db      = _.get(data, 'req.db');
 
         // create the pancake
-        db.collection('pancakes').insertOne(pancake,
-        function (err) {
+        db.collection('pancakes').insertOne(pancake,function (err) {
             if (err) {
                 // log the error for us to see but lets give a more generic
                 // response to the user
-                console.error(err);
+                log.error(err);
                 reject({
                     status: 500,
-                    errors: [{
+                    errors: [ {
                         title: 'Internal Error',
                         detail: 'Failed to save pancake to DB.'
-                    }]
+                    } ]
                 });
                 return;
             }
@@ -97,6 +103,8 @@ function savePancake (data) {
  * others we may want to manipulate data before we send it in the response. For
  * that reason it's a nice idea to separate business logic before the response
  * and the sending of the response.
+ * @param {Object} data dependencies for sending the response
+ * @returns {void}
  */
 function sendSuccessResponse (data) {
     let res = _.get(data, 'res');
@@ -112,6 +120,9 @@ function sendSuccessResponse (data) {
  * our endpoint for creating pancakes is hit. It uses the methods above to
  * separate logic but these aren't directly accessible when this module is
  * required only this function is exported using `module.exports = ...`.
+ * @param {Object} req Express request object
+ * @param {Object} res Express response object
+ * @returns {Promise} promise resolved when pancake is created
  */
 function createPancake (req, res) {
     return validateParams({ req: req, res: res })
@@ -139,12 +150,12 @@ function createPancake (req, res) {
             // an error thrown by another library or a syntax errors we missed.
             // Who knows but we should send something and take a look at the
             // logs to find out more.
-            console.error(err);
+            log.error(err);
             res.status(500).json({
-                errors: [{
+                errors: [ {
                     title: 'Internal Error',
                     detail: 'Unknown error'
-                }]
+                } ]
             });
         });
 }

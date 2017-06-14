@@ -1,0 +1,46 @@
+{
+    "env": {
+        "node": true,
+        "es6": true,
+        "browser": true,
+        "jasmine": true
+    },
+    "globals": {
+      "angular": true
+    },
+    "extends": "eslint:recommended",
+    "rules": {
+        "no-console": [ "error" ],
+        "indent": [ "error", 4 ],
+        "linebreak-style": [ "error", "unix" ],
+        "quotes": [ "error", "single" ],
+        "semi": [ "error" ],
+        "space-before-function-paren": [ "error" ],
+        "key-spacing": [ "error" ],
+        "space-before-blocks": [ "error" ],
+        "array-bracket-spacing": [ "error", "always" ],
+        "space-infix-ops": [ "error" ],
+        "no-var": "error",
+        "no-trailing-spaces": ["error",
+            { "skipBlankLines": false }
+        ],
+        "no-inline-comments": "error",
+        "valid-jsdoc": "error",
+        "comma-dangle": "error",
+        "require-jsdoc": [
+            "error",
+            {
+                "require": {
+                    "FunctionDeclaration": true,
+                    "MethodDefinition": true,
+                    "ClassDeclaration": true,
+                    "ArrowFunctionExpression": true
+                }
+            }
+        ]
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    }
+}
