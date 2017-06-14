@@ -2,6 +2,7 @@
 
 let Promise = require('promise');
 let _       = require('lodash');
+let log = require('../../../util/log');
 
 // Docs
 // ----
@@ -26,25 +27,26 @@ let _       = require('lodash');
 // or fails depending on input.
 
 /**
- *
+ * @returns {Promise} Promise resolved when pancakes returned from db
+ * @param {Object} data dependencies for getting pancakes from db
  */
 function getPancakesFromDb (data) {
     return new Promise(function (resolve, reject) {
-        let db = _.get(data, 'req.db');  // our middleware adds db to every req object
+        // our middleware adds db to every req object
+        let db = _.get(data, 'req.db');
 
         // create the pancake
-        db.collection('pancakes').find({}).toArray(
-        function (err, result) {
+        db.collection('pancakes').find({}).toArray(function (err, result) {
             if (err) {
                 // log the error for us to see but lets give a more generic
                 // response to the user
-                console.error(err);
+                log.error(err);
                 reject({
                     status: 500,
-                    errors: [{
+                    errors: [ {
                         title: 'Internal Error',
                         detail: 'Failed to get pancakes from DB.'
-                    }]
+                    } ]
                 });
                 return;
             }
@@ -64,6 +66,8 @@ function getPancakesFromDb (data) {
  * others we may want to manipulate data before we send it in the response. For
  * that reason it's a nice idea to separate business logic before the response
  * and the sending of the response.
+ * @param {Object} data dependencies for sending response
+ * @returns {void}
  */
 function sendSuccessResponse (data) {
     let res = _.get(data, 'res');
@@ -79,6 +83,9 @@ function sendSuccessResponse (data) {
  * our endpoint for getting pancakes is hit. It uses the methods above to
  * separate logic but these aren't directly accessible when this module is
  * required only this function is exported using `module.exports = ...`.
+ * @param {Object} req Express request object
+ * @param {Object} res Express response object
+ * @returns {Promise} promise resolved when the pancake response is sent
  */
 function getPancakes (req, res) {
     return getPancakesFromDb({ req, res })
@@ -104,12 +111,12 @@ function getPancakes (req, res) {
             // an error thrown by another library or a syntax errors we missed.
             // Who knows but we should send something and take a look at the
             // logs to find out more.
-            console.error(err);
+            log.error(err);
             res.status(500).json({
-                errors: [{
+                errors: [ {
                     title: 'Internal Error',
                     detail: 'Unknown error'
-                }]
+                } ]
             });
         });
 }

@@ -1,14 +1,15 @@
-var express     = require('express');
-var cors        = require('cors');
-var bodyParser  = require('body-parser')
-var MongoClient = require('mongodb').MongoClient;
-var app         = express();
+let express     = require('express');
+let cors        = require('cors');
+let bodyParser  = require('body-parser');
+let MongoClient = require('mongodb').MongoClient;
+let app         = express();
+let log = require('./util/log');
 
 // we use the multer middleware to handle multipart/form-data form submits for
 // our upload endpoint. This is where we configure multer and the middleware we
 // want to use
-var multer = require('multer');
-var upload = multer({ dest: 'tmp/' });
+let multer = require('multer');
+let upload = multer({ dest: 'tmp/' });
 
 // we use the body parser middleware to handle json data being passed in request
 // bodies
@@ -18,9 +19,9 @@ app.use(bodyParser.json());
 // (endpoints). Its usually a good practice to store each endpoint in its own
 // file name spaced by folder. That means our index.js doesn't grow out of
 // control after we've added a few endpoints.
-var uploadFile    = require('./api/v1/upload');
-var createPancake = require('./api/v1/pancakes/post');
-var getPancakes   = require('./api/v1/pancakes/get');
+let uploadFile    = require('./api/v1/upload');
+let createPancake = require('./api/v1/pancakes/post');
+let getPancakes   = require('./api/v1/pancakes/get');
 
 // Note: Anything we run here will run only once when we start the backend. This
 // is good for setting up our API routes and what functions they call or middle
@@ -32,12 +33,13 @@ var getPancakes   = require('./api/v1/pancakes/get');
 // domains) so browsers can block requests from our front end to the API for
 // security reasons.
 app.use(cors({
-    origin: 'http://localhost:9000' // requests from our front end are ok (anywhere else seems sketchy)
+    // requests from our front end are ok (anywhere else seems sketchy)
+    origin: 'http://localhost:9000'
 }));
 
 // Create a database variable outside of the database connection callback to
 // reuse the connection pool in your app.
-var db;
+let db;
 
 // for all our endpoints that are hit add our own middle ware that adds a
 // reference to the db variable we set in our database connection callback. We
@@ -99,12 +101,12 @@ app.get('/api/v1/pancakes', getPancakes);
 // that fails we don't bother starting the server (after all nothing will really
 // work if we can't get data from our database). Once we have a connection we
 // start the express server using `app.listen`.
-var connectString = 'mongodb://localhost:27017/hello-stack';
+let connectString = 'mongodb://localhost:27017/hello-stack';
 
 MongoClient.connect(connectString, function (err, database) {
     // connection failed so give up on life
     if (err) {
-        console.error(err);
+        log.error(err);
         process.exit(1);
     }
 
@@ -119,6 +121,6 @@ MongoClient.connect(connectString, function (err, database) {
     // our server being ready. For this example we just log that everything is
     // good to go.
     app.listen(9001, function () {
-        console.log('Example app listening on port 3001!')
+        log.info('Example app listening on port 3001!');
     });
 });
