@@ -1,31 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 /**
- * a Component
+ * A component for each pancake item in our pancake items list.
  */
 class PancakeItem extends React.Component {
-
     /**
-     * [constructor description]
-     * @param  {Object} props [description]
-     * @return {Object}       [description]
-     */
-    constructor (props) {
-        super(props);
-        this.title = props.title;
-    }
-    /**
-     * [render description]
-     * @return {[type]} [description]
+     * Renders the pancake item component.
+     * @return {Object} Our component
      */
     render () {
         return (
             <div>
-                {this.title}
+                {this.props.title}
             </div>
         );
     }
-
 }
 
 PancakeItem.propTypes = {
