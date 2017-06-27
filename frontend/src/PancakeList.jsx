@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import PancakeItem from './PancakeItem.jsx';
+
 /**
- * a Component
+ * A component to list a array of pancakes.
  */
 class PancakeList extends React.Component {
-
     /**
-     * Adds a list of pancake items
-     * @param  {Object} pancakes the pancakes to be added
-     * @return {PancakeItem}     the outputted list of pancakes
+     * Function to build up an array of PancakeItem components for each pancake
+     * in our pancake data passed to this component.
+     * @param  {Array} pancakes Array of pancakes to be rendered
+     * @return {Object} The outputted list of pancakes
      */
     createPancakeItems (pancakes) {
         const pancakeStack = pancakes.map( (pancake) => {
@@ -19,9 +20,9 @@ class PancakeList extends React.Component {
     }
 
     /**
-     * Renders a list of pancake items
-     * @param  {Object} pancake [description]
-     * @return {void}         [description]
+     * Renders the list component with multiple item components for each
+     * pancake.
+     * @return {Object} Our component
      */
     render () {
         return (
@@ -30,7 +31,6 @@ class PancakeList extends React.Component {
             </div>
         );
     }
-
 }
 
 PancakeList.propTypes = {
