@@ -27,7 +27,6 @@ class App extends React.Component {
     componentDidMount () {
         axios.get('http://localhost:9001/api/v1/pancakes')
             .then((response) => {
-                console.log('pancakes are: ', response.data.pancakes);
                 this.setState({
                     data: response.data.pancakes
                 });
@@ -40,11 +39,14 @@ class App extends React.Component {
      * @returns {void}
      */
     addPancake (title) {
-        console.log('todo title', title);
-        //push new state
-        this.state.data.push({title: title});
-        //react to the change
-        this.setState({data: this.state.data});
+
+        axios.post('http://localhost:9001/api/v1/pancakes',{pancake: {name: title}})
+            .then( (response) => {
+                //push new state
+                this.state.data.push(response.data.pancake);
+                //react to the change
+                this.setState({data: this.state.data});
+            });
     }
 
     /**

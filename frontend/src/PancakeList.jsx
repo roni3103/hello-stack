@@ -5,15 +5,6 @@ import PancakeItem from './PancakeItem.jsx';
  * a Component
  */
 class PancakeList extends React.Component {
-    /**
-     * Constructs the initial list of pancakes
-     * @param  {Object} props [description]
-     * @return {void}       [description]
-     */
-    constructor (props) {
-        super(props);
-        this.pancakes = props.pancakes;
-    }
 
     /**
      * Adds a list of pancake items
@@ -21,7 +12,6 @@ class PancakeList extends React.Component {
      * @return {PancakeItem}     the outputted list of pancakes
      */
     createPancakeItems (pancakes) {
-        console.log('in createPancakeItems', pancakes);
         const pancakeStack = pancakes.map( (pancake) => {
             return (<PancakeItem title = {pancake.name} key = {pancake._id} />);
         });
@@ -36,7 +26,7 @@ class PancakeList extends React.Component {
     render () {
         return (
             <div>
-                {this.createPancakeItems(this.pancakes)}
+                {this.createPancakeItems(this.props.pancakes)}
             </div>
         );
     }
