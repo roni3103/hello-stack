@@ -8,8 +8,8 @@
     "globals": {
       "angular": true
     },
-    "extends": "eslint:recommended",
-    "rules": {
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "rules":  {
         "no-console": [ "error" ],
         "indent": [ "error", 4 ],
         "linebreak-style": [ "error", "unix" ],
@@ -41,6 +41,10 @@
     },
     "parserOptions": {
         "ecmaVersion": 6,
-        "sourceType": "module"
-    }
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": ['react']
 }
