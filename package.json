@@ -25,11 +25,12 @@
     "eslint": "^4.0.0",
     "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.28.0",
+    "react-router-dom": "^4.1.1",
     "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
     "start": "parallelshell \"npm run start-frontend\" \"npm run start-backend\"",
-    "start-frontend": "webpack-dev-server --config frontend/webpack.config.js --port 9000",
+    "start-frontend": "webpack-dev-server --config frontend/webpack.config.js",
     "start-backend": "node backend/index.js",
     "webpack": "webpack -d --config frontend/webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",

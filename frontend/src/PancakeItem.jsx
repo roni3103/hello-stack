@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 /**
@@ -12,14 +13,15 @@ class PancakeItem extends React.Component {
     render () {
         return (
             <div>
-                {this.props.title}
+                <Link to={`/pancakes/${this.props.id}`}>{this.props.title}</Link>
             </div>
         );
     }
 }
 
 PancakeItem.propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired
 };
 
 export default PancakeItem;

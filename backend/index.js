@@ -22,7 +22,9 @@ app.use(bodyParser.json());
 // control after we've added a few endpoints.
 let uploadFile    = require('./api/v1/upload');
 let createPancake = require('./api/v1/pancakes/post');
-let getPancakes   = require('./api/v1/pancakes/get');
+let getPancakes   = require('./api/v1/pancakes/getAll');
+let getPancake   = require('./api/v1/pancakes/get');
+
 
 // Note: Anything we run here will run only once when we start the backend. This
 // is good for setting up our API routes and what functions they call or middle
@@ -97,6 +99,7 @@ app.post('/api/v1/upload', upload.single('file'), uploadFile);
  */
 app.post('/api/v1/pancakes', createPancake);
 app.get('/api/v1/pancakes', getPancakes);
+app.get('/api/v1/pancakes/:id', getPancake);
 
 // Before we start our server (API) we create a connection to out Mongo DB. If
 // that fails we don't bother starting the server (after all nothing will really

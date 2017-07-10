@@ -14,7 +14,7 @@ class PancakeList extends React.Component {
      */
     createPancakeItems (pancakes) {
         const pancakeStack = pancakes.map( (pancake) => {
-            return (<PancakeItem title = {pancake.name} key = {pancake._id} />);
+            return (<PancakeItem title = {pancake.name} id={pancake._id} key = {pancake._id} />);
         });
         return (<div>{pancakeStack}</div>);
     }

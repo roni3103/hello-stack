@@ -10,6 +10,7 @@ class PancakeForm extends React.Component {
      * default browser form submit behavior, calls the createPancake prop passed
      * to the component and finally resets the input value in the form.
      * @param {Object} event Form submit event
+     * @returns {void}
      */
     add (event) {
         event.preventDefault();
@@ -29,7 +30,7 @@ class PancakeForm extends React.Component {
             </form>
         );
     }
-};
+}
 
 PancakeForm.propTypes = {
     createPancake: PropTypes.func.isRequired

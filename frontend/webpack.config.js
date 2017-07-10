@@ -29,6 +29,10 @@ let config = {
                 }
             }
         ]
+    },
+    devServer: {
+        port: 9000,
+        historyApiFallback: true
     }
 };
 
