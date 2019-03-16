@@ -21,9 +21,11 @@ app.use(bodyParser.json());
 // file name spaced by folder. That means our index.js doesn't grow out of
 // control after we've added a few endpoints.
 let uploadFile    = require('./api/v1/upload');
-let createPancake = require('./api/v1/pancakes/post');
-let getPancakes   = require('./api/v1/pancakes/get');
+// let createPancake = require('./api/v1/pancakes/post');
+// let getPancakes   = require('./api/v1/pancakes/get');
 
+let getPancakes = require('./api/v2/pancakes/get');
+let createPancake   = require('./api/v2/pancakes/post');
 // Note: Anything we run here will run only once when we start the backend. This
 // is good for setting up our API routes and what functions they call or middle
 // ware which we only want to do once and not on every request.
@@ -35,7 +37,7 @@ let getPancakes   = require('./api/v1/pancakes/get');
 // security reasons.
 app.use(cors({
     // requests from our front end are ok (anywhere else seems sketchy)
-    origin: 'http://localhost:9000'
+    origin: 'http://localhost:8999'
 }));
 
 // Create a database variable outside of the database connection callback to
@@ -76,7 +78,7 @@ app.use(function (req, res, next) {
  * It also makes for easier unit testing. Luckily the other endpoints are much
  * better.
  */
-app.get('/api/v1/time', function (req, res) {
+app.get('/api/v2/time', function (req, res) {
     res.send(new Date());
 });
 
@@ -90,19 +92,21 @@ app.get('/api/v1/time', function (req, res) {
  * the form field "file". Once done processing that call our function to do
  * whatever we want with the file.
  */
-app.post('/api/v1/upload', upload.single('file'), uploadFile);
+app.post('/api/v2/upload', upload.single('file'), uploadFile);
 
 /**
  * Pancake create and get endpoint.
  */
-app.post('/api/v1/pancakes', createPancake);
-app.get('/api/v1/pancakes', getPancakes);
+app.post('/api/v2/pancakes', createPancake);
+app.get('/api/v2/pancakes', getPancakes);
 
 // Before we start our server (API) we create a connection to out Mongo DB. If
 // that fails we don't bother starting the server (after all nothing will really
 // work if we can't get data from our database). Once we have a connection we
 // start the express server using `app.listen`.
-let connectString = 'mongodb://localhost:27017/hello-stack';
+// let connectString = 'mongodb://roni:training1@ds053128.mlab.com:53128/hello-stack';
+
+let connectString = 'mongodb://roni:training123@ds251179.mlab.com:51179/magickeeper'	
 
 MongoClient.connect(connectString, function (err, database) {
     // connection failed so give up on life
@@ -114,6 +118,7 @@ MongoClient.connect(connectString, function (err, database) {
     // Save database object from the callback for reuse. See how we use `db` in
     // our middeware further up
     db = database;
+    log.info('database is ', db)
 
     // Finally the setup is done but we haven't started our server yet so lets
     // do that. The second argument for `app.listen` is a function which gets
@@ -122,6 +127,6 @@ MongoClient.connect(connectString, function (err, database) {
     // our server being ready. For this example we just log that everything is
     // good to go.
     app.listen(9001, function () {
-        log.info('Example app listening on port 3001!');
+        log.info('Example app listening on port 9001!');
     });
 });

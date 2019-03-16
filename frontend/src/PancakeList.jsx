@@ -13,12 +13,20 @@ class PancakeList extends React.Component {
      * @return {Object} The outputted list of pancakes
      */
     createPancakeItems (pancakes) {
+        console.log('passed to frontend', pancakes)
         const pancakeStack = pancakes.map( (pancake) => {
-            return (<PancakeItem title = {pancake.name} key = {pancake._id} />);
+            return (<li><PancakeItem title = {pancake.Name} key = {pancake._id} /></li>);
         });
-        return (<div>{pancakeStack}</div>);
+        return (<div><ul>{pancakeStack}</ul></div>);
     }
 
+    // createPancakeItems (cards) {
+    //     console.log('passed to frontend', cards)
+    //     const cardStack = cards.map( (card) => {
+    //         return (<li><PancakeItem title = {card.Name} key = {card._id} /></li>);
+    //     });
+    //     return (<div><ul>{cardStack}</ul></div>);
+    // }
     /**
      * Renders the list component with multiple item components for each
      * pancake.

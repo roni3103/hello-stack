@@ -36,7 +36,7 @@ function getPancakesFromDb (data) {
         let db = _.get(data, 'req.db');
 
         // create the pancake
-        db.collection('pancakes').find({}).toArray(function (err, result) {
+        db.collection('mtgkeeper').find({}).toArray(function (err, result) {
             if (err) {
                 // log the error for us to see but lets give a more generic
                 // response to the user
@@ -45,7 +45,7 @@ function getPancakesFromDb (data) {
                     status: 500,
                     errors: [ {
                         title: 'Internal Error',
-                        detail: 'Failed to get pancakes from DB.'
+                        detail: 'Failed to get cards from DB.'
                     } ]
                 });
                 return;
@@ -65,36 +65,36 @@ function getPancakesFromDb (data) {
  * @returns {Promise} Promise resolved when pancakes returned from db
  * @param {Object} data dependencies for getting pancakes from db
  */
-function getChocolatePancakes (data) {
-    return new Promise(function (resolve, reject) {
-        // our middleware adds db to every req object
-        let db = _.get(data, 'req.db');
+// function getChocolatePancakes (data) {
+//     return new Promise(function (resolve, reject) {
+//         // our middleware adds db to every req object
+//         let db = _.get(data, 'req.db');
 
-        // create the pancake
-        db.collection('pancakes').find({'name': 'chocolate'}).toArray(function (err, result) {
-            if (err) {
-                // log the error for us to see but lets give a more generic
-                // response to the user
-                log.error(err);
-                reject({
-                    status: 500,
-                    errors: [ {
-                        title: 'Internal Error',
-                        detail: 'Failed to get pancakes from DB.'
-                    } ]
-                });
-                return;
-            }
+//         // create the pancake
+//         db.collection('pancakes').find({'name': 'chocolate'}).toArray(function (err, result) {
+//             if (err) {
+//                 // log the error for us to see but lets give a more generic
+//                 // response to the user
+//                 log.error(err);
+//                 reject({
+//                     status: 500,
+//                     errors: [ {
+//                         title: 'Internal Error',
+//                         detail: 'Failed to get pancakes from DB.'
+//                     } ]
+//                 });
+//                 return;
+//             }
 
-            // we have our pancakes so add them to object we pass through the
-            // promise chain so we can send them in our API response.
-            data.pancakes = result;
+//             // we have our pancakes so add them to object we pass through the
+//             // promise chain so we can send them in our API response.
+//             data.pancakes = result;
 
-            // Save went well resolve :D
-            resolve(data);
-        });
-    });
-}
+//             // Save went well resolve :D
+//             resolve(data);
+//         });
+//     });
+// }
 
 /**
  * Very basic 200 response for successes. While this response is very basic in
@@ -106,6 +106,7 @@ function getChocolatePancakes (data) {
  */
 function sendSuccessResponse (data) {
     let res = _.get(data, 'res');
+    console.log('data passed to success = ', data)
     let response = {
         pancakes: _.get(data, 'pancakes', [])
     };
@@ -123,7 +124,7 @@ function sendSuccessResponse (data) {
  * @returns {Promise} promise resolved when the pancake response is sent
  */
 function getPancakes (req, res) {
-    return getChocolatePancakes({ req, res })
+    return getPancakesFromDb({ req, res })
         .then(sendSuccessResponse)
         .catch(function (err) {
             // Note: we don't separate this function like we did the ones above.

@@ -29,7 +29,7 @@ class App extends React.Component {
      * @return {void}
      */
     componentDidMount () {
-        axios.get('http://localhost:9001/api/v1/pancakes')
+        axios.get('http://localhost:9001/api/v2/pancakes')
             .then((response) => {
                 this.setState({
                     data: response.data.pancakes
@@ -47,7 +47,7 @@ class App extends React.Component {
      * @returns {void}
      */
     addPancake (title) {
-        axios.post('http://localhost:9001/api/v1/pancakes',{pancake: {name: title}})
+        axios.post('http://localhost:9001/api/v2/pancakes',{pancake: {name: title}})
             .then( (response) => {
                 // push new pancake into our state data
                 this.state.data.push(response.data.pancake);

@@ -7,16 +7,17 @@ let log = require('../../../util/log');
 // Docs
 // ----
 //
-// This module contains the code to handle a request for getting all pancakes
-// stored in the database. There are many ways to go about this and some warning
-// much of this is personal preference because of that. However everything is
-// personal preference gained over time and with reasoning so I do recommend
-// following this structure or at the very least the reasonings behind it.
+// This module contains the code to handle a request for creating a new pancake
+// and saving it to a database collection. There are many ways to go about this
+// and some warning much of this is personal preference because of that. However
+// everything is personal preference gained over time and with reasoning so I do
+// recommend following this structure or at the very least the reasonings behind
+// it.
 //
 // The end result of any module for this endpoint should be a function that
 // takes 2 arguments "req" and "res" (request/response) and responds when the
-// pancakes have been fetched with the data or an error depending on how the
-// database read went.
+// pancake is saved a success or error status code and body depending on how
+// things went. Everything else is preference.
 //
 // This module heavily builds on breaking out logic into functions that return
 // promises so the final function we export is simply a chain of steps to do.
@@ -27,51 +28,56 @@ let log = require('../../../util/log');
 // or fails depending on input.
 
 /**
- * @returns {Promise} Promise resolved when pancakes returned from db
- * @param {Object} data dependencies for getting pancakes from db
+ * Checks the body for our API request to see if it has all the details we need
+ * to save a new pancake.
+ * @param {Object} data dependencies for sending response
+ * @returns {Promise} promise resolved when params have been validated
  */
-function getPancakesFromDb (data) {
+function validateParams (data) {
     return new Promise(function (resolve, reject) {
-        // our middleware adds db to every req object
-        let db = _.get(data, 'req.db');
+        let pancake = _.get(data, 'req.body.pancake', {});
+        let errors  = [];
 
-        // create the pancake
-        db.collection('pancakes').find({}).toArray(function (err, result) {
-            if (err) {
-                // log the error for us to see but lets give a more generic
-                // response to the user
-                log.error(err);
-                reject({
-                    status: 500,
-                    errors: [ {
-                        title: 'Internal Error',
-                        detail: 'Failed to get pancakes from DB.'
-                    } ]
-                });
-                return;
-            }
+        // validate our request (all pancakes need a name)
+        if (!pancake.name) {
+            errors.push({
+                title: 'Invalid Attribute',
+                detail: 'Pancake name is required.'
+            });
+        }
 
-            // we have our pancakes so add them to object we pass through the
-            // promise chain so we can send them in our API response.
-            data.pancakes = result;
+        // if errors lets bottle out
+        if (errors.length) {
+            // return so we don't call the rest of our code and reject so
+            // promise chain stops as the request wasn't valid
+            return reject({
+                status: 400,
+                errors: errors
+            });
+        }
 
-            // Save went well resolve :D
-            resolve(data);
-        });
+        // add our validated pancake to object we pass through the promise chain
+        data.pancake = pancake;
+
+        // everything looks good so lets resolve this promise
+        resolve(data);
     });
 }
 
 /**
- * @returns {Promise} Promise resolved when pancakes returned from db
- * @param {Object} data dependencies for getting pancakes from db
+ * Function to save a pancake to the database.
+ * @param {Object} data dependencies for sending response
+ * @returns {Promise} promise resolved when panacake is saved
  */
-function getChocolatePancakes (data) {
+function savePancake (data) {
     return new Promise(function (resolve, reject) {
+        // the previous validate function will have added our validated pancake
+        let pancake = _.get(data, 'pancake');
         // our middleware adds db to every req object
-        let db = _.get(data, 'req.db');
+        let db      = _.get(data, 'req.db');
 
         // create the pancake
-        db.collection('pancakes').find({'name': 'chocolate'}).toArray(function (err, result) {
+        db.collection('pancakes').insertOne(pancake,function (err) {
             if (err) {
                 // log the error for us to see but lets give a more generic
                 // response to the user
@@ -80,15 +86,11 @@ function getChocolatePancakes (data) {
                     status: 500,
                     errors: [ {
                         title: 'Internal Error',
-                        detail: 'Failed to get pancakes from DB.'
+                        detail: 'Failed to save pancake to DB.'
                     } ]
                 });
                 return;
             }
-
-            // we have our pancakes so add them to object we pass through the
-            // promise chain so we can send them in our API response.
-            data.pancakes = result;
 
             // Save went well resolve :D
             resolve(data);
@@ -101,13 +103,13 @@ function getChocolatePancakes (data) {
  * others we may want to manipulate data before we send it in the response. For
  * that reason it's a nice idea to separate business logic before the response
  * and the sending of the response.
- * @param {Object} data dependencies for sending response
+ * @param {Object} data dependencies for sending the response
  * @returns {void}
  */
 function sendSuccessResponse (data) {
     let res = _.get(data, 'res');
     let response = {
-        pancakes: _.get(data, 'pancakes', [])
+        pancake: _.get(data, 'pancake', {})
     };
 
     res.status(200).json(response);
@@ -115,15 +117,16 @@ function sendSuccessResponse (data) {
 
 /**
  * This is the function we end up exporting. So this is the method we call when
- * our endpoint for getting pancakes is hit. It uses the methods above to
+ * our endpoint for creating pancakes is hit. It uses the methods above to
  * separate logic but these aren't directly accessible when this module is
  * required only this function is exported using `module.exports = ...`.
  * @param {Object} req Express request object
  * @param {Object} res Express response object
- * @returns {Promise} promise resolved when the pancake response is sent
+ * @returns {Promise} promise resolved when pancake is created
  */
-function getPancakes (req, res) {
-    return getChocolatePancakes({ req, res })
+function createPancake (req, res) {
+    return validateParams({ req: req, res: res })
+        .then(savePancake)
         .then(sendSuccessResponse)
         .catch(function (err) {
             // Note: we don't separate this function like we did the ones above.
@@ -136,7 +139,8 @@ function getPancakes (req, res) {
             if (err.status && err.errors) {
                 // we know how to handle this error as this looks like we
                 // rejected with a set status and errors to respond with. Take a
-                // look at `getPancakes` where we reject when the DB find fails.
+                // look at `validateParams` where we reject when there is no
+                // pancake title or when DB insert fails in `savePancake`.
                 return res.status(err.status).json({
                     errors: err.errors
                 });
@@ -156,4 +160,4 @@ function getPancakes (req, res) {
         });
 }
 
-module.exports = getPancakes;
+module.exports = createPancake;
